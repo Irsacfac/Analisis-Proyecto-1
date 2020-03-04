@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 
 public class Window_Nonogram : MonoBehaviour
 {
 
     private RectTransform nonogramContainer;
+    [SerializeField] private Sprite cVaciaSprite;
+    [SerializeField] private Sprite cRellenaSprite;
     private TextWriter archivo;
     private TextReader lectorArchivo;
 
@@ -14,6 +17,8 @@ public class Window_Nonogram : MonoBehaviour
         nonogramContainer = transform.Find("nonogramContainer").GetComponent<RectTransform>();
         //creartxt();
         leertxt();
+        //dibujarCuadriculas(new Vector2(200,200));
+        dibujarNonogram(24,38);//max actual(con valores anclados 24x38)
     }
 
     // Start is called before the first frame update
@@ -50,5 +55,29 @@ public class Window_Nonogram : MonoBehaviour
         //si no hay nada escrito, o no resta nada por leer, retorna "" o vacio. No lo se bien
         //cerrar archivo
         lectorArchivo.Close();
+    }
+
+    private void dibujarCuadriculas(Vector2 filaColumna){
+        GameObject cuadriculaVacia = new GameObject("cVacia",typeof(Image));
+        cuadriculaVacia.transform.SetParent(nonogramContainer, false);
+        cuadriculaVacia.GetComponent<Image>().sprite = cVaciaSprite;
+        RectTransform rectTransform = cuadriculaVacia.GetComponent<RectTransform>();
+        rectTransform.anchoredPosition = filaColumna;
+        rectTransform.sizeDelta = new Vector2(25,25);
+        rectTransform.anchorMin = new Vector2(0,0);
+        rectTransform.anchorMax = new Vector2(0,0);
+    }
+
+    private void dibujarNonogram(int filas, int columnas){
+        float nonogramHeight = nonogramContainer.sizeDelta.y;
+        float yMaximun = 25f;
+        float xSize = 25f;
+        for(int i = 0; i < columnas; i++){
+            for (int j = 0; j < filas; j++){
+                float xPosition = xSize + (i * xSize);
+                float yPosition = xSize + (j/yMaximun)*nonogramHeight;
+                dibujarCuadriculas(new Vector2(xPosition,yPosition));
+            }
+        }
     }
 }
