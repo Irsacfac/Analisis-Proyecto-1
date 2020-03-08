@@ -20,7 +20,7 @@ public class Window_Nonogram : MonoBehaviour
         nonogramContainer = transform.Find("nonogramContainer").GetComponent<RectTransform>();
         //creartxt();
         leertxt();
-        nonogram miNonogram = new nonogram(nonogramContainer, cVaciaSprite, cRellenaSprite);
+        nonogram miNonogram = new nonogram(X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
         //dibujarCuadriculas(new Vector2(200,200));
         //dibujarNonogram(24,38);//max actual(con valores anclados 24x38)
     }
@@ -133,11 +133,11 @@ public class Window_Nonogram : MonoBehaviour
         private Sprite cVaciaSprite;
         private Sprite cRellenaSprite;
         
-        public nonogram(RectTransform pContainer, Sprite pVacia, Sprite pRellena){
+        public nonogram(int filas, int columnas, RectTransform pContainer, Sprite pVacia, Sprite pRellena){
             this.nonogramContainer = pContainer;
             this.cVaciaSprite = pVacia;
             this.cRellenaSprite = pRellena;
-            dibujarNonogram(24,38);
+            dibujarNonogram(filas,columnas);
         }
 
         private void dibujarCuadriculas(Vector2 filaColumna){
