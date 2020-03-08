@@ -17,9 +17,10 @@ public class Window_Nonogram : MonoBehaviour
     private int Y;
 
     private void Awake(){
-        //nonogramContainer = transform.Find("nonogramContainer").GetComponent<RectTransform>();
-        creartxt();
+        nonogramContainer = transform.Find("nonogramContainer").GetComponent<RectTransform>();
+        //creartxt();
         leertxt();
+        nonogram miNonogram = new nonogram(nonogramContainer, cVaciaSprite, cRellenaSprite);
         //dibujarCuadriculas(new Vector2(200,200));
         //dibujarNonogram(24,38);//max actual(con valores anclados 24x38)
     }
@@ -102,7 +103,7 @@ public class Window_Nonogram : MonoBehaviour
         lectorArchivo.Close();
     }
 
-    private void dibujarCuadriculas(Vector2 filaColumna){
+    /*private void dibujarCuadriculas(Vector2 filaColumna){
         GameObject cuadriculaVacia = new GameObject("cVacia",typeof(Image));
         cuadriculaVacia.transform.SetParent(nonogramContainer, false);
         cuadriculaVacia.GetComponent<Image>().sprite = cVaciaSprite;
@@ -122,6 +123,44 @@ public class Window_Nonogram : MonoBehaviour
                 float xPosition = xSize + (i * xSize);
                 float yPosition = xSize + (j/yMaximun)*nonogramHeight;
                 dibujarCuadriculas(new Vector2(xPosition,yPosition));
+            }
+        }
+    }*/
+
+    private class nonogram{
+
+        private RectTransform nonogramContainer;
+        private Sprite cVaciaSprite;
+        private Sprite cRellenaSprite;
+        
+        public nonogram(RectTransform pContainer, Sprite pVacia, Sprite pRellena){
+            this.nonogramContainer = pContainer;
+            this.cVaciaSprite = pVacia;
+            this.cRellenaSprite = pRellena;
+            dibujarNonogram(24,38);
+        }
+
+        private void dibujarCuadriculas(Vector2 filaColumna){
+            GameObject cuadriculaVacia = new GameObject("cVacia",typeof(Image));
+            cuadriculaVacia.transform.SetParent(nonogramContainer, false);
+            cuadriculaVacia.GetComponent<Image>().sprite = cVaciaSprite;
+            RectTransform rectTransform = cuadriculaVacia.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = filaColumna;
+            rectTransform.sizeDelta = new Vector2(25,25);
+            rectTransform.anchorMin = new Vector2(0,0);
+            rectTransform.anchorMax = new Vector2(0,0);
+        }
+
+        private void dibujarNonogram(int filas, int columnas){
+            float nonogramHeight = nonogramContainer.sizeDelta.y;
+            float yMaximun = 25f;
+            float xSize = 25f;
+            for(int i = 0; i < columnas; i++){
+                for (int j = 0; j < filas; j++){
+                    float xPosition = xSize + (i * xSize);
+                    float yPosition = xSize + (j/yMaximun)*nonogramHeight;
+                    dibujarCuadriculas(new Vector2(xPosition,yPosition));
+                }
             }
         }
     }
