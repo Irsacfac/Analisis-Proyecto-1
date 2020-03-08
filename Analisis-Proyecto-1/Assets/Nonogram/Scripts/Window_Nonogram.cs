@@ -132,11 +132,13 @@ public class Window_Nonogram : MonoBehaviour
         private RectTransform nonogramContainer;
         private Sprite cVaciaSprite;
         private Sprite cRellenaSprite;
+        private List<Sprite> tipoCasilla;
         
         public nonogram(int filas, int columnas, RectTransform pContainer, Sprite pVacia, Sprite pRellena){
             this.nonogramContainer = pContainer;
             this.cVaciaSprite = pVacia;
             this.cRellenaSprite = pRellena;
+            tipoCasilla = new List<Sprite> {cVaciaSprite, cRellenaSprite};
             dibujarNonogram(filas,columnas);
         }
 
