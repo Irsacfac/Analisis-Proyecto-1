@@ -4,23 +4,28 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System;
+using CodeMonkey.Utils;
+using CodeMonkey;
 
 public class Window_Nonogram : MonoBehaviour
 {
 
     private RectTransform nonogramContainer;
+    [SerializeField] private TextBox textBox;
     [SerializeField] private Sprite cVaciaSprite;
     [SerializeField] private Sprite cRellenaSprite;
     private TextWriter archivo;
     private TextReader lectorArchivo;
+    private String nombreArchivo;
     private int X;
     private int Y;
 
     private void Awake(){
         nonogramContainer = transform.Find("nonogramContainer").GetComponent<RectTransform>();
+        //textBox = transform.Find("TextBox").GetComponent<TextBox>();
         //creartxt();
-        leertxt();
-        nonogram miNonogram = new nonogram(X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
+        //leertxt();
+        //nonogram miNonogram = new nonogram(X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
         //dibujarCuadriculas(new Vector2(200,200));
         //dibujarNonogram(24,38);//max actual(con valores anclados 24x38)
     }
@@ -28,7 +33,14 @@ public class Window_Nonogram : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        textBox.Show((string inputText) => {
+            CMDebug.TextPopupMouse(inputText);
+            nombreArchivo = inputText;
+        });
+        //nombreArchivo + ".txt";
+        leertxt(nombreArchivo + ".txt");
+        nonogram miNonogram = new nonogram(X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
+        
     }
 
     // Update is called once per frame
@@ -49,7 +61,7 @@ public class Window_Nonogram : MonoBehaviour
         archivo.Close();
     }
 
-    private void leertxt(){
+    private void leertxt(string pArchivo){
         //abrir en modo solo lectura?
         lectorArchivo = new StreamReader("Nonogram1.txt");
         //escribir en la consola de Unity
