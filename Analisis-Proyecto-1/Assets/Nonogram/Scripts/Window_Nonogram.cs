@@ -33,11 +33,13 @@ public class Window_Nonogram : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //llama al text box
         textBox.Show((string inputText) => {
             CMDebug.TextPopupMouse(inputText);
             nombreArchivo = inputText;
+            //prueba para comprobar que se obtiene el dato correctamente
+            Debug.Log(nombreArchivo + ".txt");
         });
-        //nombreArchivo + ".txt";
         leertxt(nombreArchivo + ".txt");
         nonogram miNonogram = new nonogram(X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
         
