@@ -146,21 +146,29 @@ public class Window_Nonogram : MonoBehaviour
         private RectTransform nonogramContainer;
         private Sprite cVaciaSprite;
         private Sprite cRellenaSprite;
-        private List<Sprite> tipoCasilla;
+        private int[,] matriz;
         
         public nonogram(int filas, int columnas, RectTransform pContainer, Sprite pVacia, Sprite pRellena){
             this.nonogramContainer = pContainer;
             this.cVaciaSprite = pVacia;
             this.cRellenaSprite = pRellena;
-            tipoCasilla = new List<Sprite> {cVaciaSprite, cRellenaSprite};
+            matriz = new int[filas,columnas];
             dibujarNonogram(filas,columnas);
         }
 
-        private void dibujarCuadriculas(Vector2 filaColumna){
-            GameObject cuadriculaVacia = new GameObject("cVacia",typeof(Image));
-            cuadriculaVacia.transform.SetParent(nonogramContainer, false);
-            cuadriculaVacia.GetComponent<Image>().sprite = cVaciaSprite;
-            RectTransform rectTransform = cuadriculaVacia.GetComponent<RectTransform>();
+        private void resolverNonogram(){
+
+        }
+
+        private void dibujarCuadriculas(Vector2 filaColumna, bool pVacia){
+            GameObject cuadricula = new GameObject("casilla",typeof(Image));
+            cuadricula.transform.SetParent(nonogramContainer, false);
+            if(pVacia){
+                cuadricula.GetComponent<Image>().sprite = cVaciaSprite;    
+            }else{
+                cuadricula.GetComponent<Image>().sprite = cRellenaSprite;
+            }
+            RectTransform rectTransform = cuadricula.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = filaColumna;
             rectTransform.sizeDelta = new Vector2(25,25);
             rectTransform.anchorMin = new Vector2(0,0);
@@ -171,11 +179,13 @@ public class Window_Nonogram : MonoBehaviour
             float nonogramHeight = nonogramContainer.sizeDelta.y;
             float yMaximun = 25f;
             float xSize = 25f;
-            for(int i = 0; i < columnas; i++){
-                for (int j = 0; j < filas; j++){
-                    float xPosition = xSize + (i * xSize);
-                    float yPosition = xSize + (j/yMaximun)*nonogramHeight;
-                    dibujarCuadriculas(new Vector2(xPosition,yPosition));
+            bool tipoCasilla;
+            for(int i = 0; i < filas; i++){
+                for (int j = 0; j < columnas; j++){
+                    float yPosition = xSize + (i * xSize);
+                    float xPosition = xSize + (j/yMaximun)*nonogramHeight;
+                    tipoCasilla = matriz[i,j] != 1;
+                    dibujarCuadriculas(new Vector2(xPosition,yPosition), tipoCasilla);
                 }
             }
         }
