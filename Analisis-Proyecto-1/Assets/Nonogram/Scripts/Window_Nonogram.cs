@@ -39,10 +39,10 @@ public class Window_Nonogram : MonoBehaviour
             nombreArchivo = inputText;
             //prueba para comprobar que se obtiene el dato correctamente
             Debug.Log(nombreArchivo + ".txt");
+            leertxt(nombreArchivo + ".txt");
+            nonogram miNonogram = new nonogram(X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
         });
-        leertxt(nombreArchivo + ".txt");
-        nonogram miNonogram = new nonogram(X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
-        
+
     }
 
     // Update is called once per frame
@@ -63,51 +63,59 @@ public class Window_Nonogram : MonoBehaviour
         archivo.Close();
     }
 
-    private void leertxt(string pArchivo){
+    private void leertxt(string pArchivo)
+    {
         //abrir en modo solo lectura?
-        lectorArchivo = new StreamReader("Nonogram1.txt");
-        //escribir en la consola de Unity
-
-        String linea=lectorArchivo.ReadLine();           //
-        linea = linea.Replace(" ","");                   // Lee y guarda
-        int separador = linea.IndexOf(",");              // el largo y ancho
-        X = int.Parse(linea.Substring(0, separador));    // del Nonogram
-        Y = int.Parse(linea.Substring(separador+1));     //
-        Debug.Log("X: "+X+" Y: "+Y);
-
-        bool FilaColumna=false;
-        do
+        try
         {
-            linea = lectorArchivo.ReadLine();
-            if (linea != null)
+            lectorArchivo = new StreamReader(pArchivo);
+            //escribir en la consola de Unity
+
+            String linea = lectorArchivo.ReadLine();           //
+            linea = linea.Replace(" ", "");                   // Lee y guarda
+            int separador = linea.IndexOf(",");              // el largo y ancho
+            X = int.Parse(linea.Substring(0, separador));    // del Nonogram
+            Y = int.Parse(linea.Substring(separador + 1));     //
+            Debug.Log("X: " + X + " Y: " + Y);
+
+            bool FilaColumna = false;
+            do
             {
-                if (linea.Equals("FILAS"))
+                linea = lectorArchivo.ReadLine();
+                if (linea != null)
                 {
-                    FilaColumna = true;
-                }
-                else if (linea.Equals("COLUMNAS"))
-                {
-                    FilaColumna = false;
-                }
-                else
-                {
-                    linea = linea.Replace(" ", "");
-                    string[] separadas;
-                    separadas = linea.Split(',');
-                    if (FilaColumna)
+                    if (linea.Equals("FILAS"))
                     {
-                        //Añadir a la lista de filas
-                        Debug.Log("Fila: " + separadas.Length);
+                        FilaColumna = true;
+                    }
+                    else if (linea.Equals("COLUMNAS"))
+                    {
+                        FilaColumna = false;
                     }
                     else
                     {
-                        //Añadir a la lista de columnas
-                        Debug.Log("Columnas: " + separadas.Length);
+                        linea = linea.Replace(" ", "");
+                        string[] separadas;
+                        separadas = linea.Split(',');
+                        if (FilaColumna)
+                        {
+                            //Añadir a la lista de filas
+                            Debug.Log("Fila: " + separadas.Length);
+                        }
+                        else
+                        {
+                            //Añadir a la lista de columnas
+                            Debug.Log("Columnas: " + separadas.Length);
+                        }
                     }
                 }
-            }
-            
-        } while (linea != null);
+
+            } while (linea != null);
+        }
+        catch
+        {
+            Debug.Log("ERROR");
+        }
 
         /*Debug.Log(lectorArchivo.ReadLine());//lee una linea linea
         Debug.Log(lectorArchivo.ReadLine());//cada vez que se llama se lee la linea siguiente
