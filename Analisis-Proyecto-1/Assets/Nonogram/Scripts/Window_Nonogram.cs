@@ -51,6 +51,10 @@ public class Window_Nonogram : MonoBehaviour
         
     }
 
+    private void rellenarMatriz(List<List<int>> pFilas, List<List<int>> pColumnas){
+
+    }
+
     private void creartxt(){
         //crear un archivo con el nombre y extencion asignados
         archivo = new StreamWriter("archivo.txt");
@@ -162,10 +166,6 @@ public class Window_Nonogram : MonoBehaviour
             this.cRellenaSprite = pRellena;
             matriz = new int[filas,columnas];
             dibujarNonogram(filas,columnas);
-        }
-
-        private void resolverNonogram(){
-
         }
 
         private void dibujarCuadriculas(Vector2 filaColumna, bool pVacia){
