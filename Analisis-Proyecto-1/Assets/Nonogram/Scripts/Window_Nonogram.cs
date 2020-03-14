@@ -19,6 +19,8 @@ public class Window_Nonogram : MonoBehaviour
     private String nombreArchivo;
     private int X;
     private int Y;
+    List<int[]> Filas = new List<int[]>();
+    List<int[]> Columnas = new List<int[]>();
 
     private void Awake(){
         nonogramContainer = transform.Find("nonogramContainer").GetComponent<RectTransform>();
@@ -101,15 +103,16 @@ public class Window_Nonogram : MonoBehaviour
                         linea = linea.Replace(" ", "");
                         string[] separadas;
                         separadas = linea.Split(',');
+                        int[] myInt = Array.ConvertAll(separadas, int.Parse);
                         if (FilaColumna)
                         {
-                            //Añadir a la lista de filas
-                            Debug.Log("Fila: " + separadas.Length);
+                            Filas.Add(myInt);//Añadir a la lista de filas
+                            //Debug.Log("Fila: " + separadas.Length);
                         }
                         else
                         {
-                            //Añadir a la lista de columnas
-                            Debug.Log("Columnas: " + separadas.Length);
+                            Columnas.Add(myInt);//Añadir a la lista de columnas
+                            //Debug.Log("Columnas: " + separadas.Length);
                         }
                     }
                 }
@@ -121,14 +124,30 @@ public class Window_Nonogram : MonoBehaviour
             Debug.Log("ERROR");
         }
 
-        /*Debug.Log(lectorArchivo.ReadLine());//lee una linea linea
-        Debug.Log(lectorArchivo.ReadLine());//cada vez que se llama se lee la linea siguiente
-        Debug.Log(lectorArchivo.ReadToEnd());//lee lodo el archivo, si se leyeron lineas con anterioridad empezara en la linea siguiente a la ultima leida
-        //si no hay nada escrito, o no resta nada por leer, retorna "" o vacio. No lo se bien*/
+        imprimirFilasColumnas();
         //cerrar archivo
         lectorArchivo.Close();
     }
 
+    private void imprimirFilasColumnas()
+    {
+        Debug.Log("Filas");
+        for (int i = 0; i < Filas.Count; i++)
+        {
+            for (int j = 0; j < Filas[i].Length; j++)
+            {
+                Debug.Log("Fila " + (i + 1) + " " + Filas[i][j]);
+            }
+        }
+        Debug.Log("Columnas");
+        for (int i = 0; i < Columnas.Count; i++)
+        {
+            for (int j = 0; j < Columnas[i].Length; j++)
+            {
+                Debug.Log("Columna " + (i + 1) + " " + Columnas[i][j]);
+            }
+        }
+    }
     /*private void dibujarCuadriculas(Vector2 filaColumna){
         GameObject cuadriculaVacia = new GameObject("cVacia",typeof(Image));
         cuadriculaVacia.transform.SetParent(nonogramContainer, false);
