@@ -22,6 +22,8 @@ public class Window_Nonogram : MonoBehaviour
     List<int[]> Filas = new List<int[]>();
     List<int[]> Columnas = new List<int[]>();
 
+    int[,] matriz;
+
     private void Awake(){
         nonogramContainer = transform.Find("nonogramContainer").GetComponent<RectTransform>();
         //textBox = transform.Find("TextBox").GetComponent<TextBox>();
@@ -42,6 +44,7 @@ public class Window_Nonogram : MonoBehaviour
             //prueba para comprobar que se obtiene el dato correctamente
             Debug.Log(nombreArchivo + ".txt");
             leertxt(nombreArchivo + ".txt");
+            matriz = new int[Filas.Count,Columnas.Count];
             nonogram miNonogram = new nonogram(X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
         });
 
@@ -53,9 +56,143 @@ public class Window_Nonogram : MonoBehaviour
         
     }
 
-    private void rellenarMatriz(List<List<int>> pFilas, List<List<int>> pColumnas){
+    private void rellenarMatriz(){
+        for(int i = 0; i < Filas.Count; i++){
+            rellenarFila(i, Filas[i]);
+        }
+    }
+
+    private void rellenarFila(int pFila, int[] pCasillas){
+        int porPintar = 0;
+        int columna = 0;
+        int contador = 0;
+        int totalCols = Columnas.Count;
+        if(casillasNecesarias(pCasillas) > totalCols){
+            //terminar programa
+            Debug.Log("No se puede resolver");
+        }else{
+            for(int i = 0; i < pCasillas.Length; i++){
+                porPintar = pCasillas[i];
+                for(int j = 0; j < porPintar; j++){
+                    matriz[pFila,columna] = 1;
+                    columna++;
+                }if(columna < totalCols){
+                    matriz[pFila,columna] = 2;
+                }
+            }
+            while(columna < totalCols){
+                matriz[pFila,columna] = 2;
+                columna++;
+            }
+        }
+    }
+
+    private int casillasNecesarias(int[] pCasillas){
+        int contador = 0;
+        int totalPintadas = 0;
+        while(contador < pCasillas.Length){
+            totalPintadas += pCasillas[contador];
+            contador++;
+        }
+        return totalPintadas+contador-1;
 
     }
+
+
+    /*private void rellenarMatriz(){
+        for(int i = 0; i < Filas.Count; i++){
+            rellenarFila(0);
+        }
+        for(int j = 0; j < Columnas.Count; j++){
+            rellenarColumna(j);
+        }
+    }
+
+    rellenarFila(int pFila){
+        int[] resFilaActual = Filas[pFila];
+        List<int> casillasPintadas = new List<int>();
+        for(int i = 0; i < Columnas.Count; i++){
+            int contador = 0;
+            if(matriz[pFila,i] == 1){
+                while (matriz[pFila,i] == 1){
+                    contador++;
+                    i++;
+                }
+                casillasPintadas.Add(contador);
+            }
+        }
+        if(casillasPintadas.Count > resFilaActual.Length){
+
+        }
+    }
+
+    rellenarColumna(int pColumna){
+
+    }*/
+
+    /*private void rellenarMatriz(){
+        //int[,] matriz = new int[Filas.Count,Columnas.Count];
+        int[] filaActual;       //lista de restrcciones de la fila actual
+        int[] columnaActual;    //lista de restrcciones de la columna actual
+        for(int i = 0; i < Filas.Count; i++){
+            filaActual = Filas[i];
+            int restriccionActual;
+            for(int j = 0; j < filaActual.Length; j++){
+                int contador = 0;
+                restriccionActual = filaActual[j];
+                while(contador < restriccionActual){
+                    rellenarColumna();
+                }
+            }
+        }
+    }
+
+    private void rellenarColumna(){
+
+    }*/
+
+    /*private void rellenarMatriz(List<int[]> pFilas, List<int[]> pColumnas){
+        int[] filaActual;
+        int restriccionActual;
+        int[,] matriz = new int[X,Y];
+        for(int i = 0; i < pFilas.Count; i++){
+            filaActual = pFilas[i];
+            int contador = 0;
+            while (contador < filaActual.Length)
+            {
+                restriccionActual = filaActual[contador];
+                rellenarFila(matriz, i, restriccionActual);
+            }
+        }
+    }
+
+    private void rellenarFila(int [,] matriz, int pFila, int casillasPintadas){
+        int contador = 0;
+        while(matriz[pFila,contador] != 0){
+            while (matriz[pFila,contador] == 1){
+                contador++;
+            }
+            contador++;
+            if(contador+casillasPintadas-1 >= matriz.Length(0)){
+                Debug.Log("Imposible resolver");
+            }
+        }
+        for (int i = 0; i < casillasPintadas; i++)
+        {
+            matriz[pFila,contador+i] = 1;
+            rellenarColumna(matriz, pFila, contador+i);
+        }
+
+    }
+
+    private void rellenarColumna(int [,] matriz, int pFila, int pColumna){
+        int contador = 0;
+
+        if(contador+casillasPintadas >= matriz.Length(1)){
+                Debug.Log("Imposible resolver");
+            }
+
+    }*/
 
     private void creartxt(){
         //crear un archivo con el nombre y extencion asignados
