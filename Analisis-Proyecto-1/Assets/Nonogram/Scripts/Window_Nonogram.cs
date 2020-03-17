@@ -73,6 +73,7 @@ public class Window_Nonogram : MonoBehaviour
             //terminar programa
             Debug.Log("No se puede resolver");
             errorMessage.Show();
+            //System.Environment.Exit(0); esto crashea unity
         }else{
             for(int i = 0; i < pCasillas.Length; i++){
                 porPintar = pCasillas[i];

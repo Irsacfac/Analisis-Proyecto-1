@@ -21,7 +21,7 @@ public class ErrorMessage : MonoBehaviour
 
         okBtn.ClickFunc = () => {
             Hide();
-            //System.Environment.Exit(0);
+            //System.Environment.Exit(0);esto crashea unity
         };
     }
     
