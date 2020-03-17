@@ -12,6 +12,7 @@ public class Window_Nonogram : MonoBehaviour
 
     private RectTransform nonogramContainer;
     [SerializeField] private TextBox textBox;
+    [SerializeField] private ErrorMessage errorMessage;
     [SerializeField] private Sprite cVaciaSprite;
     [SerializeField] private Sprite cRellenaSprite;
     private TextWriter archivo;
@@ -71,6 +72,7 @@ public class Window_Nonogram : MonoBehaviour
         if(casillasNecesarias(pCasillas) > totalCols){
             //terminar programa
             Debug.Log("No se puede resolver");
+            errorMessage.Show();
         }else{
             for(int i = 0; i < pCasillas.Length; i++){
                 porPintar = pCasillas[i];
