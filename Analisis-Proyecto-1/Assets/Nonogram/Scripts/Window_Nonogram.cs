@@ -45,7 +45,8 @@ public class Window_Nonogram : MonoBehaviour
             Debug.Log(nombreArchivo + ".txt");
             leertxt(nombreArchivo + ".txt");
             matriz = new int[Filas.Count,Columnas.Count];
-            nonogram miNonogram = new nonogram(X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
+            rellenarMatriz();
+            nonogram miNonogram = new nonogram(matriz, X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
         });
 
     }
@@ -76,8 +77,10 @@ public class Window_Nonogram : MonoBehaviour
                 for(int j = 0; j < porPintar; j++){
                     matriz[pFila,columna] = 1;
                     columna++;
-                }if(columna < totalCols){
+                }
+                if(columna < totalCols){
                     matriz[pFila,columna] = 2;
+                    columna++;
                 }
             }
             while(columna < totalCols){
@@ -316,11 +319,11 @@ public class Window_Nonogram : MonoBehaviour
         private Sprite cRellenaSprite;
         private int[,] matriz;
         
-        public nonogram(int filas, int columnas, RectTransform pContainer, Sprite pVacia, Sprite pRellena){
+        public nonogram(int[,] pMatriz, int filas, int columnas, RectTransform pContainer, Sprite pVacia, Sprite pRellena){
             this.nonogramContainer = pContainer;
             this.cVaciaSprite = pVacia;
             this.cRellenaSprite = pRellena;
-            matriz = new int[filas,columnas];
+            matriz = pMatriz;
             dibujarNonogram(filas,columnas);
         }
 
@@ -346,7 +349,7 @@ public class Window_Nonogram : MonoBehaviour
             bool tipoCasilla;
             for(int i = 0; i < filas; i++){
                 for (int j = 0; j < columnas; j++){
-                    float yPosition = xSize + (i * xSize);
+                    float yPosition = nonogramHeight-xSize - (i * xSize);
                     float xPosition = xSize + (j/yMaximun)*nonogramHeight;
                     tipoCasilla = matriz[i,j] != 1;
                     dibujarCuadriculas(new Vector2(xPosition,yPosition), tipoCasilla);
