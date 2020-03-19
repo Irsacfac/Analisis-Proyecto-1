@@ -59,9 +59,55 @@ public class Window_Nonogram : MonoBehaviour
     }
 
     private void rellenarMatriz(){
-        for(int i = 0; i < Filas.Count; i++){
+        /*for(int i = 0; i < Filas.Count; i++){
             rellenarFila(i, Filas[i]);
+        }*/
+        rellenarFila(0, Filas[0]);
+        bool nonogramResuelto = false;
+        int cont = 0;
+        bool correcto = false;
+        bool permutar = false;
+        while (!nonogramResuelto)
+        {
+            //correcto=verificarColumnas();
+            if (correcto = true)//Si no hay conflicto se pinta la siguiente fila
+            {
+                cont++;
+                rellenarFila(cont, Filas[cont]);
+            }
+            else//Si hay conflicto se permuta la última fila
+            {
+                permutar=permutarFila(cont, Filas[cont]);
+                if (permutar == false)//Si se acabaron las permutaciones de la fila se limpia y se regresa a la anterior
+                {
+                    //limpiarFila(cont, Filas[cont]);
+                    cont--;
+                }
+            }
+
+            if (cont==Filas.Count & correcto==true)//Verifica si el nonogram está resuelto
+            {
+                nonogramResuelto = true;
+            }
+            if (cont < 0)//Verifica si se acabaron las permutaciones de la primer fila, por lo que no tiene solución
+            {
+                break;
+            }
         }
+
+        if (nonogramResuelto == true)
+        {
+            Debug.Log("Nonogram resuelto");
+        }
+        else
+        {
+            Debug.Log("El Nonogram es imposible de resolver");
+        }
+    }
+
+    private bool permutarFila(int pFila, int[] pCasillas)
+    {
+        return false;
     }
 
     private void rellenarFila(int pFila, int[] pCasillas){
@@ -91,6 +137,11 @@ public class Window_Nonogram : MonoBehaviour
                 columna++;
             }
         }
+    }
+
+    private void rellenarColumna(int pColumna)
+    {
+
     }
 
     private int casillasNecesarias(int[] pCasillas){
@@ -131,10 +182,6 @@ public class Window_Nonogram : MonoBehaviour
 
         }
     }
-
-    rellenarColumna(int pColumna){
-
-    }*/
 
     /*private void rellenarMatriz(){
         //int[,] matriz = new int[Filas.Count,Columnas.Count];
