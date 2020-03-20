@@ -139,6 +139,33 @@ public class Window_Nonogram : MonoBehaviour
         }
     }
 
+    private bool verificarColumnas(){
+        for(int i = 0; i < Columnas.Count; i++){
+            int filaActual = 0;
+            int[] colActual = Columnas[i];
+            int contRestricciones = 0;
+            int restriccionActual = colActual[contRestricciones];
+            while(filaActual < Filas.Count){
+                while((matriz[filaActual,i] != 1) && (filaActual < Filas.Count)){
+                    filaActual++;
+                }
+                while((matriz[filaActual,i] == 1) && (filaActual < Filas.Count)){
+                    filaActual++;
+                    restriccionActual--;
+                }
+                if(restriccionActual < 0){
+                        return true;
+                }else{
+                    contRestricciones++;
+                    if(contRestricciones < colActual.Length){
+                        restriccionActual = colActual[contRestricciones];
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private void rellenarColumna(int pColumna)
     {
 
