@@ -26,7 +26,7 @@ public class ErrorMessage : MonoBehaviour
         };
     }
     
-    public void Hide(){
+    private void Hide(){
         gameObject.SetActive(false);
     }
 }
