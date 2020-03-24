@@ -22,7 +22,9 @@ public class Window_Nonogram : MonoBehaviour
     private int Y;
     List<int[]> Filas = new List<int[]>();
     List<int[]> Columnas = new List<int[]>();
-
+    List<int[]> FilasIndices = new List<int[]>();
+    List<int[]> ColumnasIndices = new List<int[]>();
+    int[] Grupos;
     int[,] matriz;
 
     private void Awake(){
@@ -46,6 +48,12 @@ public class Window_Nonogram : MonoBehaviour
             Debug.Log(nombreArchivo + ".txt");
             leertxt(nombreArchivo + ".txt");
             matriz = new int[Filas.Count,Columnas.Count];
+            Grupos = new int[Filas.Count];
+            for(int i = 0; i < Filas.Count; i++)
+            {
+                Grupos[i] = Filas[i].Length;
+                Debug.Log("GRUPO "+i+": "+Grupos[i]);
+            }
             rellenarMatriz();
             nonogram miNonogram = new nonogram(matriz, X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
         });
@@ -70,17 +78,18 @@ public class Window_Nonogram : MonoBehaviour
         while (!nonogramResuelto)
         {
             //correcto=verificarColumnas();
-            if (correcto = true)//Si no hay conflicto se pinta la siguiente fila
+            if (correcto == true)//Si no hay conflicto se pinta la siguiente fila
             {
                 cont++;
                 rellenarFila(cont, Filas[cont]);
             }
             else//Si hay conflicto se permuta la última fila
             {
-                permutar=permutarFila(cont, Filas[cont]);
+                permutar=permutarFila(cont);
                 if (permutar == false)//Si se acabaron las permutaciones de la fila se limpia y se regresa a la anterior
                 {
-                    //limpiarFila(cont, Filas[cont]);
+                    //limpiarFila(cont);
+                    //FilasIndices.RemoveAt(FilasIndices.Count-1);
                     cont--;
                 }
             }
@@ -95,6 +104,7 @@ public class Window_Nonogram : MonoBehaviour
             }
         }
 
+        imprimirFila(0);
         if (nonogramResuelto == true)
         {
             Debug.Log("Nonogram resuelto");
@@ -105,9 +115,63 @@ public class Window_Nonogram : MonoBehaviour
         }
     }
 
-    private bool permutarFila(int pFila, int[] pCasillas)
+    private bool permutarFila(int pFila)
     {
+        //Filas[cont]
+        bool salir = false;
+        bool direccion = false;
+        int cont = Filas[pFila].Length;//Cantidad de grupos
+        int indice = 0;//Indice
+        while (!salir)
+        {
+
+            cont--;
+            if (cont == 0)
+            {
+                break;
+            }
+            //salir = true;
+        }
         return false;
+    }
+
+    private void imprimirFila(int pFila)
+    {
+        String resp = "";
+        String resp2 = "";
+        for (int i = 0; i < Y; i++)
+        {
+            resp+=matriz[pFila,i];
+        }
+        for (int i = 0; i < FilasIndices[pFila].Length; i++)
+        {
+            resp2 +=FilasIndices[pFila][i]+", ";
+        }
+        Debug.Log("Fila " + (pFila + 1) + ": " + resp);
+        Debug.Log("Indices "+ (pFila + 1) + ": " + resp2);
+    }
+
+    private void rePintarFila(int pFila)
+    {
+        int cont = 0;
+        bool bandera = false;
+        for(int i=0; i < Y; i++)
+        {
+            if(i>FilasIndices[pFila][cont] && i < FilasIndices[pFila][cont] + Filas[pFila][cont])
+            {
+                matriz[pFila, i] = 1;
+                bandera = true;
+            }
+            else
+            {
+                matriz[pFila, i] = 0;
+                if (bandera)
+                {
+                    cont++;
+                    bandera = false;
+                }
+            }
+        }
     }
 
     private void rellenarFila(int pFila, int[] pCasillas){
@@ -121,18 +185,25 @@ public class Window_Nonogram : MonoBehaviour
             errorMessage.Show();
             //System.Environment.Exit(0); esto crashea unity
         }else{
+            int[] temp= new int[pCasillas.Length];
+            temp[0] = 0;
             for(int i = 0; i < pCasillas.Length; i++){
                 porPintar = pCasillas[i];
                 for(int j = 0; j < porPintar; j++){
                     matriz[pFila,columna] = 1;
                     columna++;
                 }
-                if(columna < totalCols){
+                if (columna < totalCols){
                     matriz[pFila,columna] = 2;
                     columna++;
                 }
+                if (i > 0)
+                {
+                    temp[i]= temp[i - 1] + Filas[pFila][i-1] + 1;
+                }
             }
-            while(columna < totalCols){
+            FilasIndices.Add(temp);
+            while (columna < totalCols){
                 matriz[pFila,columna] = 2;
                 columna++;
             }
@@ -365,6 +436,7 @@ public class Window_Nonogram : MonoBehaviour
             }
         }
     }
+
     /*private void dibujarCuadriculas(Vector2 filaColumna){
         GameObject cuadriculaVacia = new GameObject("cVacia",typeof(Image));
         cuadriculaVacia.transform.SetParent(nonogramContainer, false);
