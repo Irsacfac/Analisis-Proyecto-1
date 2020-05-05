@@ -77,20 +77,28 @@ public class Window_Nonogram : MonoBehaviour
         bool permutar = false;
         while (!nonogramResuelto)
         {
-            //correcto=verificarColumnas();
+            correcto=verificarColumnas();
             if (correcto == true)//Si no hay conflicto se pinta la siguiente fila
             {
                 cont++;
-                rellenarFila(cont, Filas[cont]);
+                if (cont != Filas.Count)
+                {
+                    rellenarFila(cont, Filas[cont]);
+                }
             }
             else//Si hay conflicto se permuta la última fila
             {
-                permutar=permutarFila(cont);
+                permutar = permutarFila(cont);
+                Debug.Log("FIN PERMUTACIONES");
                 if (permutar == false)//Si se acabaron las permutaciones de la fila se limpia y se regresa a la anterior
                 {
-                    //limpiarFila(cont);
-                    //FilasIndices.RemoveAt(FilasIndices.Count-1);
+                    limpiarFila(cont);
+                    FilasIndices.RemoveAt(FilasIndices.Count - 1);
                     cont--;
+                }
+                else
+                {
+                    rePintarFila(cont);
                 }
             }
 
@@ -119,20 +127,57 @@ public class Window_Nonogram : MonoBehaviour
     {
         //Filas[cont]
         bool salir = false;
-        bool direccion = false;
         int cont = Filas[pFila].Length;//Cantidad de grupos
-        int indice = 0;//Indice
         while (!salir)
         {
-
-            cont--;
-            if (cont == 0)
-            {
-                break;
+            FilasIndices[pFila][Filas[pFila].Length - 1] = FilasIndices[pFila][Filas[pFila].Length - 1] + 1;
+            if (FilasIndices[pFila][Filas[pFila].Length-1] + Filas[pFila][Filas[pFila].Length-1] <= X){
+                salir = true;
             }
+            else
+            {
+                if (Filas[pFila].Length == 1)
+                {
+                    break;
+                }
+                else if (Grupos[pFila]==Filas[pFila].Length)
+                {
+                    Grupos[pFila] = Grupos[pFila] - 1;
+                    FilasIndices[pFila][Filas[pFila].Length-1] = FilasIndices[pFila][Filas[pFila].Length-2]+2;
+                }
+                if (Grupos[pFila] > 0)
+                {
+                    int indice = Filas[pFila].Length-1;
+                    while (!salir)
+                    {
+                        if (indice < 0)
+                        {
+                            break;
+                        }
+                        FilasIndices[pFila][indice] = FilasIndices[pFila][indice] + 1;
+                        for (int i=1; i<(Filas[pFila].Length - 1)-indice;i++)
+                        {
+                            FilasIndices[pFila][indice+i] = FilasIndices[pFila][indice+i-1]+ Filas[pFila][indice+i-1] +1;
+                        }
+                        if (FilasIndices[pFila][Filas[pFila].Length - 1] + Filas[pFila][Filas[pFila].Length - 1] > X)
+                        {
+                            indice = indice-1;
+                        }
+                        else
+                        {
+                            salir = true;
+                        }
+                     }
+                }
+                else
+                {
+
+                }
+            }
+            
             //salir = true;
         }
-        return false;
+        return salir;
     }
 
     private void imprimirFila(int pFila)
@@ -149,6 +194,14 @@ public class Window_Nonogram : MonoBehaviour
         }
         Debug.Log("Fila " + (pFila + 1) + ": " + resp);
         Debug.Log("Indices "+ (pFila + 1) + ": " + resp2);
+    }
+
+    private void limpiarFila(int pFila)
+    {
+        for (int i = 0; i < Y; i++)
+        {
+            matriz[pFila, i] = 0;
+        }
     }
 
     private void rePintarFila(int pFila)
@@ -208,6 +261,42 @@ public class Window_Nonogram : MonoBehaviour
                 columna++;
             }
         }
+    }
+
+    private bool verificarColumnasIncompleto()
+    {
+        for (int i = 0; i < Columnas.Count; i++)
+        {
+            int filaActual = 0;
+            int[] colActual = Columnas[i];
+            int contRestricciones = 0;
+            int restriccionActual = colActual[contRestricciones];
+            while (filaActual < Filas.Count)
+            {
+                while ((matriz[filaActual, i] != 1) && (filaActual < Filas.Count))
+                {
+                    filaActual++;
+                }
+                while ((matriz[filaActual, i] == 1) && (filaActual < Filas.Count))
+                {
+                    filaActual++;
+                    restriccionActual--;
+                }
+                if (restriccionActual < 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    contRestricciones++;
+                    if (contRestricciones < colActual.Length)
+                    {
+                        restriccionActual = colActual[contRestricciones];
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private bool verificarColumnas(){
