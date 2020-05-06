@@ -75,9 +75,11 @@ public class Window_Nonogram : MonoBehaviour
         int cont = 0;
         bool correcto = false;
         bool permutar = false;
-        while (!nonogramResuelto)
+        int cont2=0;
+        while (!nonogramResuelto/* && cont2<10*/)
         {
-            correcto=verificarColumnas();
+            correcto = verificarColumnasIncompleto();
+            Debug.Log("Correcto: "+correcto);
             if (correcto == true)//Si no hay conflicto se pinta la siguiente fila
             {
                 cont++;
@@ -89,7 +91,7 @@ public class Window_Nonogram : MonoBehaviour
             else//Si hay conflicto se permuta la última fila
             {
                 permutar = permutarFila(cont);
-                Debug.Log("FIN PERMUTACIONES");
+                Debug.Log("FIN PERMUTACIONES "+permutar);
                 if (permutar == false)//Si se acabaron las permutaciones de la fila se limpia y se regresa a la anterior
                 {
                     limpiarFila(cont);
@@ -110,9 +112,10 @@ public class Window_Nonogram : MonoBehaviour
             {
                 break;
             }
+            //cont2++;
+            //Debug.Log("CONT2: "+cont2);
         }
-
-        imprimirFila(0);
+        //imprimirFila(0);
         if (nonogramResuelto == true)
         {
             Debug.Log("Nonogram resuelto");
@@ -128,6 +131,7 @@ public class Window_Nonogram : MonoBehaviour
         //Filas[cont]
         bool salir = false;
         int cont = Filas[pFila].Length;//Cantidad de grupos
+        bool salir2 = false;
         while (!salir)
         {
             FilasIndices[pFila][Filas[pFila].Length - 1] = FilasIndices[pFila][Filas[pFila].Length - 1] + 1;
@@ -147,17 +151,19 @@ public class Window_Nonogram : MonoBehaviour
                 }
                 if (Grupos[pFila] > 0)
                 {
-                    int indice = Filas[pFila].Length-1;
+                    int indice = Filas[pFila].Length-2;
                     while (!salir)
                     {
                         if (indice < 0)
                         {
+                            salir2 = true;
                             break;
                         }
                         FilasIndices[pFila][indice] = FilasIndices[pFila][indice] + 1;
-                        for (int i=1; i<(Filas[pFila].Length - 1)-indice;i++)
+                        for (int i=0; i<(Filas[pFila].Length - 1)-indice;i++)
                         {
-                            FilasIndices[pFila][indice+i] = FilasIndices[pFila][indice+i-1]+ Filas[pFila][indice+i-1] +1;
+                            FilasIndices[pFila][indice+i+1] = FilasIndices[pFila][indice+i]+ Filas[pFila][indice+i+1];
+                            //Debug.Log("INDICE: " + FilasIndices[pFila][indice + i + 1]);
                         }
                         if (FilasIndices[pFila][Filas[pFila].Length - 1] + Filas[pFila][Filas[pFila].Length - 1] > X)
                         {
@@ -168,6 +174,10 @@ public class Window_Nonogram : MonoBehaviour
                             salir = true;
                         }
                      }
+                    if (salir2 == true)
+                    {
+                        break;
+                    }
                 }
                 else
                 {
@@ -210,7 +220,7 @@ public class Window_Nonogram : MonoBehaviour
         bool bandera = false;
         for(int i=0; i < Y; i++)
         {
-            if(i>FilasIndices[pFila][cont] && i < FilasIndices[pFila][cont] + Filas[pFila][cont])
+            if(cont< FilasIndices[pFila].Length && i>=FilasIndices[pFila][cont] && i< FilasIndices[pFila][cont] + Filas[pFila][cont])
             {
                 matriz[pFila, i] = 1;
                 bandera = true;
@@ -273,11 +283,11 @@ public class Window_Nonogram : MonoBehaviour
             int restriccionActual = colActual[contRestricciones];
             while (filaActual < Filas.Count)
             {
-                while ((matriz[filaActual, i] != 1) && (filaActual < Filas.Count))
+                while ((filaActual < Filas.Count) && (matriz[filaActual, i] != 1))
                 {
                     filaActual++;
                 }
-                while ((matriz[filaActual, i] == 1) && (filaActual < Filas.Count))
+                while ((filaActual < Filas.Count) && (matriz[filaActual, i] == 1))
                 {
                     filaActual++;
                     restriccionActual--;
