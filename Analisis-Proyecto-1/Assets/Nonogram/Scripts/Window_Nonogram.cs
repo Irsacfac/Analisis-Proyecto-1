@@ -313,19 +313,25 @@ public class Window_Nonogram : MonoBehaviour
         for(int i = 0; i < Columnas.Count; i++){
             int filaActual = 0;
             int[] colActual = Columnas[i];
+            //restricciones de la columna
             int contRestricciones = 0;
             int restriccionActual = colActual[contRestricciones];
+            //mientras queden filas sin revisar
             while(filaActual < Filas.Count){
-                while((matriz[filaActual,i] != 1) && (filaActual < Filas.Count)){
+                //mientras la casilla no este rellena y no se pase la ultima fila cambie de fila
+                while((filaActual < Filas.Count) && (matriz[filaActual,i] != 1)){
                     filaActual++;
                 }
-                while((matriz[filaActual,i] == 1) && (filaActual < Filas.Count)){
+                //mientras la casilla este rellena y no se pase la ultima fila, disminuya la restriccion actual y cambie de fila
+                while((filaActual < Filas.Count) && (matriz[filaActual,i] == 1)){
                     filaActual++;
                     restriccionActual--;
                 }
                 if(restriccionActual < 0){
-                        return true;
+                    //hay mas casillas rellenas que la restriccion que se estaba balidando
+                    return true;
                 }else{
+                    //pasamos a la siguiente restriccion, si es que hay alguna restante
                     contRestricciones++;
                     if(contRestricciones < colActual.Length){
                         restriccionActual = colActual[contRestricciones];
