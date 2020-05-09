@@ -76,31 +76,34 @@ public class Window_Nonogram : MonoBehaviour
         bool correcto = false;
         bool permutar = false;
         int cont2=0;
-        while (!nonogramResuelto/* && cont2<10*/)
+        while (!nonogramResuelto/* && cont2<2*/)
         {
-            correcto = verificarColumnasIncompleto();
+            correcto = verificarColumnas(cont);
             Debug.Log("Correcto: "+correcto);
             if (correcto == true)//Si no hay conflicto se pinta la siguiente fila
             {
                 cont++;
-                if (cont != Filas.Count)
+                if (cont < Filas.Count)
                 {
                     rellenarFila(cont, Filas[cont]);
                 }
             }
             else//Si hay conflicto se permuta la última fila
             {
-                permutar = permutarFila(cont);
-                Debug.Log("FIN PERMUTACIONES "+permutar);
-                if (permutar == false)//Si se acabaron las permutaciones de la fila se limpia y se regresa a la anterior
-                {
-                    limpiarFila(cont);
-                    FilasIndices.RemoveAt(FilasIndices.Count - 1);
-                    cont--;
-                }
-                else
-                {
-                    rePintarFila(cont);
+                permutar = false;
+                while(permutar==false && cont>=0){
+                    permutar = permutarFila(cont);
+                    Debug.Log("FIN PERMUTACIONES " + permutar+" CONT "+cont);
+                    if (permutar == false)//Si se acabaron las permutaciones de la fila se limpia y se regresa a la anterior
+                    {
+                        limpiarFila(cont);
+                        FilasIndices.RemoveAt(FilasIndices.Count - 1);
+                        cont--;
+                    }
+                    else
+                    {
+                        rePintarFila(cont);
+                    }
                 }
             }
 
@@ -112,13 +115,17 @@ public class Window_Nonogram : MonoBehaviour
             {
                 break;
             }
-            //cont2++;
-            //Debug.Log("CONT2: "+cont2);
+            /*cont2++;
+            Debug.Log("CONT2: "+cont2);*/
         }
         //imprimirFila(0);
         if (nonogramResuelto == true)
         {
             Debug.Log("Nonogram resuelto");
+            /*for (int i = 0; i < Filas.Count; i++)
+            {
+                imprimirFila(i);
+            }*/
         }
         else
         {
@@ -135,7 +142,7 @@ public class Window_Nonogram : MonoBehaviour
         while (!salir)
         {
             FilasIndices[pFila][Filas[pFila].Length - 1] = FilasIndices[pFila][Filas[pFila].Length - 1] + 1;
-            if (FilasIndices[pFila][Filas[pFila].Length-1] + Filas[pFila][Filas[pFila].Length-1] <= X){
+            if (FilasIndices[pFila][Filas[pFila].Length-1] + Filas[pFila][Filas[pFila].Length-1] <= Y){
                 salir = true;
             }
             else
@@ -162,10 +169,10 @@ public class Window_Nonogram : MonoBehaviour
                         FilasIndices[pFila][indice] = FilasIndices[pFila][indice] + 1;
                         for (int i=0; i<(Filas[pFila].Length - 1)-indice;i++)
                         {
-                            FilasIndices[pFila][indice+i+1] = FilasIndices[pFila][indice+i]+ Filas[pFila][indice+i+1];
-                            //Debug.Log("INDICE: " + FilasIndices[pFila][indice + i + 1]);
+                            FilasIndices[pFila][indice+i+1] = FilasIndices[pFila][indice+i]+ Filas[pFila][indice+i]+1;
+                            //Debug.Log("INDICE: " +i+"---"+ FilasIndices[pFila][indice + i + 1]);
                         }
-                        if (FilasIndices[pFila][Filas[pFila].Length - 1] + Filas[pFila][Filas[pFila].Length - 1] > X)
+                        if (FilasIndices[pFila][Filas[pFila].Length - 1] + Filas[pFila][Filas[pFila].Length - 1] > Y)
                         {
                             indice = indice-1;
                         }
@@ -194,6 +201,7 @@ public class Window_Nonogram : MonoBehaviour
     {
         String resp = "";
         String resp2 = "";
+        String resp3 = "";
         for (int i = 0; i < Y; i++)
         {
             resp+=matriz[pFila,i];
@@ -202,8 +210,13 @@ public class Window_Nonogram : MonoBehaviour
         {
             resp2 +=FilasIndices[pFila][i]+", ";
         }
-        Debug.Log("Fila " + (pFila + 1) + ": " + resp);
+        for (int i = 0; i < Filas[pFila].Length; i++)
+        {
+            resp3 += Filas[pFila][i] + ", ";
+        }
         Debug.Log("Indices "+ (pFila + 1) + ": " + resp2);
+        Debug.Log("Restricciones " + (pFila + 1) + ": " + resp3);
+        Debug.Log("Fila " + (pFila + 1) + ": " + resp);
     }
 
     private void limpiarFila(int pFila)
@@ -220,14 +233,16 @@ public class Window_Nonogram : MonoBehaviour
         bool bandera = false;
         for(int i=0; i < Y; i++)
         {
-            if(cont< FilasIndices[pFila].Length && i>=FilasIndices[pFila][cont] && i< FilasIndices[pFila][cont] + Filas[pFila][cont])
+            if(cont< FilasIndices[pFila].Length && i>=FilasIndices[pFila][cont] && i<(FilasIndices[pFila][cont] + Filas[pFila][cont]))
             {
                 matriz[pFila, i] = 1;
                 bandera = true;
+                //Debug.Log("PINTA 1: "+i+" "+ FilasIndices[pFila][cont]+" "+ (FilasIndices[pFila][cont] + Filas[pFila][cont]));
             }
             else
             {
                 matriz[pFila, i] = 0;
+                //Debug.Log("PINTA 0: "+i);
                 if (bandera)
                 {
                     cont++;
@@ -257,7 +272,7 @@ public class Window_Nonogram : MonoBehaviour
                     columna++;
                 }
                 if (columna < totalCols){
-                    matriz[pFila,columna] = 2;
+                    matriz[pFila,columna] = 0;
                     columna++;
                 }
                 if (i > 0)
@@ -309,7 +324,7 @@ public class Window_Nonogram : MonoBehaviour
         return false;
     }
 
-    private bool verificarColumnas(){
+    private bool verificarColumnas(int cont){
         for(int i = 0; i < Columnas.Count; i++){
             int filaActual = 0;
             int[] colActual = Columnas[i];
@@ -317,6 +332,7 @@ public class Window_Nonogram : MonoBehaviour
             int contRestricciones = 0;
             int restriccionActual = colActual[contRestricciones];
             //mientras queden filas sin revisar
+            int fila=0;
             while(filaActual < Filas.Count){
                 //mientras la casilla no este rellena y no se pase la ultima fila cambie de fila
                 while((filaActual < Filas.Count) && (matriz[filaActual,i] != 1)){
@@ -326,20 +342,27 @@ public class Window_Nonogram : MonoBehaviour
                 while((filaActual < Filas.Count) && (matriz[filaActual,i] == 1)){
                     filaActual++;
                     restriccionActual--;
+                    fila = filaActual;
                 }
-                if(restriccionActual < 0){
+                if (restriccionActual < 0) {
                     //hay mas casillas rellenas que la restriccion que se estaba balidando
-                    return true;
-                }else{
+                    return false;
+                }
+                else if (restriccionActual > 0 && filaActual<cont)
+                {
+                    return false;
+                }
+                else
+                {
                     //pasamos a la siguiente restriccion, si es que hay alguna restante
                     contRestricciones++;
-                    if(contRestricciones < colActual.Length){
+                    if (contRestricciones < colActual.Length) {
                         restriccionActual = colActual[contRestricciones];
                     }
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private void rellenarColumna(int pColumna)
