@@ -59,7 +59,7 @@ public class Window_Nonogram : MonoBehaviour
             nonogram miNonogram = new nonogram(matriz, X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
             DateTime final = DateTime.Now;
             TimeSpan duracion = final - inicio;
-            Debug.Log(((float)duracion.Seconds).ToString());
+            Debug.Log(duracion.ToString("hh\\:mm\\:ss"));
         });
 
     }
