@@ -54,8 +54,12 @@ public class Window_Nonogram : MonoBehaviour
                 Grupos[i] = Filas[i].Length;
                 Debug.Log("GRUPO "+i+": "+Grupos[i]);
             }
+            DateTime inicio = DateTime.Now;
             rellenarMatriz();
             nonogram miNonogram = new nonogram(matriz, X, Y, nonogramContainer, cVaciaSprite, cRellenaSprite);
+            DateTime final = DateTime.Now;
+            TimeSpan duracion = final - inicio;
+            Debug.Log(((float)duracion.Seconds).ToString());
         });
 
     }
